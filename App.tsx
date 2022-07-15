@@ -1,125 +1,87 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Button,
+  KeyboardAvoidingView,
+  SafeAreaView,
+  ScrollView,
   StyleSheet,
-  TouchableHighlight,
-  View,
   Text,
-  TouchableOpacity,
-  TouchableNativeFeedback,
-  Platform,
-  TouchableWithoutFeedback,
   TextInput,
+  View,
 } from "react-native";
+import { useVirtualKeyboard } from "./hooks";
 
 export default function App() {
-  const onPressButton = () => {
-    alert("You tapped the button.");
-  };
-  const onLongPressButton = () => {
-    alert("You long-pressed the button!");
-  };
-
-  const [text, setText] = useState("");
+  const { handleClick, handleChange } = useVirtualKeyboard();
 
   return (
-    <View style={styles.container}>
-      <View style={styles.buttonContainer}>
-        <Button onPress={onPressButton} title="Press Me" />
-      </View>
-      <View style={styles.buttonContainer}>
-        <Button onPress={onPressButton} title="PressMe" color="#841584" />
-      </View>
-      <View style={styles.alternativeLayoutButtonContainer}>
-        <Button onPress={onPressButton} title="This looks great." />
-        <Button onPress={onPressButton} title="OK" color="#841584" />
-      </View>
-      <View style={styles.container}>
-        <TouchableHighlight onPress={onPressButton} underlayColor="white">
-          <View style={styles.touchableButton}>
-            <Text style={styles.touchableButtonText}>
-              TouchableButtonHighlight
-            </Text>
-          </View>
-        </TouchableHighlight>
-        <TouchableOpacity onPress={onPressButton}>
-          <View style={styles.touchableButton}>
-            <Text style={styles.touchableButtonText}>TouchableOpacity</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableNativeFeedback
-          onPress={onPressButton}
-          background={
-            Platform.OS === "android"
-              ? TouchableNativeFeedback.SelectableBackground()
-              : undefined
-          }
-        >
-          <View style={styles.touchableButton}>
-            <Text style={styles.touchableButtonText}>
-              TouchableWithoutFeedback&nbsp;
-              {Platform.OS !== "android" ? "(Android only)" : ""}
-            </Text>
-          </View>
-        </TouchableNativeFeedback>
-        <TouchableWithoutFeedback onPress={onPressButton}>
-          <View style={styles.touchableButton}>
-            <Text style={styles.touchableButtonText}>
-              TouchableWithoutFeedback
-            </Text>
-          </View>
-        </TouchableWithoutFeedback>
-        <TouchableHighlight
-          onPress={onPressButton}
-          onLongPress={onLongPressButton}
-          underlayColor="white"
-        >
-          <View style={styles.touchableButton}>
-            <Text style={styles.touchableButtonText}>
-              Touchable with Long Press
-            </Text>
-          </View>
-        </TouchableHighlight>
-      </View>
-      <View style={{ padding: 10 }}>
-        <TextInput
-          style={{ height: 40, borderColor: "red", borderWidth: 1 }}
-          placeholder="Type here to translate."
-          onChangeText={(newText) => setText(newText)}
-          defaultValue={text}
-        />
-        <Text style={{ padding: 10, fontSize: 42 }}>
-          {text
-            .split(" ")
-            .map((word) => word && "🍎")
-            .join(" ")}
-        </Text>
-      </View>
-    </View>
+    <SafeAreaView style={styles.safeArea}>
+      <View
+        style={{
+          width: 50,
+          height: 50,
+          margin: 20,
+          position: "absolute",
+          top: 50,
+          right: 20,
+          borderRadius: 25,
+          borderColor: "#333",
+          borderWidth: 2,
+          zIndex: 999,
+        }}
+      />
+      <KeyboardAvoidingView
+        behavior="position"
+        contentContainerStyle={{ flex: 1 }}
+        style={{ flex: 1 }}
+      >
+        <ScrollView style={{ flex: 1, backgroundColor: "white" }}>
+          {[...Array(100)].map((i, k) => {
+            return (
+              <View>
+                <Text>test data {k}</Text>
+              </View>
+            );
+          })}
+        </ScrollView>
+        <View style={styles.form}>
+          <TextInput
+            style={{
+              height: 40,
+              borderColor: "black",
+              backgroundColor: "white",
+              borderWidth: 1,
+              flex: 1,
+              paddingLeft: 5,
+            }}
+            placeholder="入力欄"
+            onChangeText={handleChange}
+          />
+          <Button title="ボタン" onPress={handleClick} />
+        </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
+    backgroundColor: "#87CEEB",
+  },
+  container: {
+    backgroundColor: "white",
+    flex: 1,
+  },
+  text: {
+    color: "#333",
+    fontSize: 20,
+  },
+  form: {
+    backgroundColor: "#87CEEB",
     justifyContent: "center",
-  },
-  buttonContainer: {
-    margin: 20,
-  },
-  alternativeLayoutButtonContainer: {
-    margin: 20,
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  touchableButton: {
-    marginBottom: 30,
     alignItems: "center",
-    backgroundColor: "#6F3219",
-  },
-  touchableButtonText: {
-    textAlign: "center",
-    padding: 20,
-    color: "white",
+    flexDirection: "row",
+    padding: 5,
   },
 });
